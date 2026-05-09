@@ -21,13 +21,31 @@ If any required input is missing, ASK the student for it before proceeding.
 
 ## Prerequisites
 
-Before starting, verify:
+Run each check. If a check fails, perform the matching install/setup step inline before continuing — don't bounce the user to another doc.
 
-- `gh --version` succeeds (GitHub CLI installed)
-- `gh auth status` shows logged-in user
-- `git config user.name` and `git config user.email` both return non-empty
+### Check 1 — `gh` CLI is installed
 
-If any check fails, tell the student EXACTLY which one and stop.
+Run: `gh --version`. If "command not found":
+
+- **macOS** → `brew install gh`. (If `brew` is also missing, the user hasn't done basic env setup yet — stop and point them to <https://vibe.yisiliu.xyz/AGENTS.md>.)
+- **Linux / WSL2** → `sudo apt update && sudo apt install -y gh`. If apt's `gh` is unavailable, fall back to GitHub's official apt repo per <https://github.com/cli/cli/blob/trunk/docs/install_linux.md>.
+- **Windows without WSL** → stop. Tell the user to install WSL2 first (`wsl --install` in PowerShell as admin, reboot, open Ubuntu), then re-run this protocol from inside WSL2.
+
+### Check 2 — `gh` is authenticated
+
+Run: `gh auth status`. If it says "not logged in":
+
+- Run `gh auth login`. Walk the user through the prompts: GitHub.com → HTTPS → Yes (auth Git) → Login with a web browser. The CLI prints an 8-character one-time code; the browser opens. The user pastes the code, signs in, authorizes. Re-run `gh auth status` to confirm "Logged in to github.com account <username>".
+- If the user has no GitHub account yet: stop and tell them to sign up at <https://github.com/signup> (free, ~2 minutes, email verification required). After they confirm, run `gh auth login`.
+
+### Check 3 — git identity is set
+
+Run `git config user.name` and `git config user.email`. If either is empty:
+
+```bash
+git config --global user.name "<their preferred display name>"
+git config --global user.email "<their email>"
+```
 
 ## Step 1 — Fork and clone (skip if already done)
 
